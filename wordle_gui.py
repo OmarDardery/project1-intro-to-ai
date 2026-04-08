@@ -33,6 +33,7 @@ import ipywidgets as widgets
 import random
 import time
 import threading
+from collections import Counter
 
 # ── Palette ───────────────────────────────────────────────────────────────────
 # Maps G/Y/B/"" feedback codes to hex colours for tiles and keyboard keys.
@@ -285,7 +286,10 @@ def make_game(*, words, allowed_words, max_turns,
             candidates = prune_candidates(candidates, guess, fb)
             after  = len(candidates)
 
-            top     = sorted(freq.items(), key=lambda kv: (-kv[1], kv[0]))[:5]
+            combined = Counter()
+            for pf in freq:
+                combined.update(pf)
+            top     = sorted(combined.items(), key=lambda kv: (-kv[1], kv[0]))[:5]
             top_str = "  ".join(f"{c}:{n}" for c, n in top)
             lines.append(
                 f"<b>Turn {turn}</b> | {before} candidates\n"
